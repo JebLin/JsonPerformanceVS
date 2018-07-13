@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @Description 样本对象
@@ -32,7 +33,7 @@ public class SampleEntity implements Serializable {
      * 随机样本
      */
     public SampleEntity() {
-        Random random = new Random();
+        Random random = ThreadLocalRandom.current();
 
         fieldBoolean = random.nextBoolean();
         fieldInt = random.nextInt();
@@ -51,8 +52,8 @@ public class SampleEntity implements Serializable {
      * @param mapKeyNum Map元素数量
      */
     public SampleEntity(int listSize, int mapKeyNum) {
-        Random random = new Random();
-
+        //  避免种子不变化
+        Random random = ThreadLocalRandom.current();
         fieldBoolean = random.nextBoolean();
         fieldInt = random.nextInt();
         fieldLong = random.nextLong();
@@ -62,6 +63,7 @@ public class SampleEntity implements Serializable {
 
         fieldList = DataBuilder.randomStringList(listSize);
         fieldMap = DataBuilder.randomMap(mapKeyNum);
+
     }
 
 

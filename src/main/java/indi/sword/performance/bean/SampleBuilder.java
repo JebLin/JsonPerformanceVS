@@ -1,6 +1,8 @@
 package indi.sword.performance.bean;
 
-import indi.sword.performance.jsonUtil.FastJsonComponent;
+import indi.sword.performance.jsonUtil.FileUtil;
+import indi.sword.performance.jsonUtil.JsonTypeEnum;
+import indi.sword.performance.jsonUtil.JsonUtil;
 
 import java.io.*;
 import java.util.LinkedList;
@@ -15,14 +17,24 @@ import java.util.List;
  */
 public class SampleBuilder {
 
-    public static void main(String[] args) {
-        int sampleSize = 1;
-        String jsonDataPath = "./samples_json.txt";
-        String objectDataPath = "./samples_object.txt";
 
-        buildJsonSamples(sampleSize, 10, 10, jsonDataPath);
-        buildObjectSamples(sampleSize, 10, 10, objectDataPath);
+    public static void buildJsonSamplesByType(List<SampleEntity> list , int typeCode, int sampleSize ,
+                                               int listSize, int mapKeyNum) throws Exception{
+        String path = FileUtil.getJsonDataPath(typeCode, sampleSize, listSize, mapKeyNum);
+        buildJsonSamples(list, path, JsonTypeEnum.GSON);
     }
+
+    public static List<SampleEntity> buildObjectSamplesByType(int sampleSize ,
+                                                 int listSize, int mapKeyNum) throws Exception{
+
+
+        String path = FileUtil.getObjectSamplesPath(sampleSize, listSize, mapKeyNum);
+        return buildObjectSamples(sampleSize, listSize, mapKeyNum, path);
+
+    }
+
+
+
 
     public static List<String> loadJSONSamples(String filePath) {
         List<String> list = new LinkedList<String>();
@@ -113,53 +125,30 @@ public class SampleBuilder {
         return list;
     }
 
-    /**
-     * 创建样本，并把样本JSON序列化，保存到文件中。
-     *
-     * @param sampleSize 样本数量
-     * @param listSize   样本List长度
-     * @param mapKeyNum  样本Map中Key的数量
-     * @param filePath   样本输出的文件路径
-     */
-    public static void buildJsonSamples(int sampleSize, int listSize, int mapKeyNum, String filePath) {
-        File file = new File(filePath);
-        File parent = file.getParentFile();
-        if (!parent.exists()) {
-            parent.mkdirs();
-        }
-
-        if (file.exists()) {
-            file.delete();
-        }
-
-        List<SampleEntity> list = buildSamples(sampleSize, listSize, mapKeyNum);
+    public static void buildJsonSamples(List<SampleEntity> list,String filePath,JsonTypeEnum jsonType) throws Exception {
 
         StringBuilder sb = new StringBuilder();
         for (SampleEntity item : list) {
-            sb.append(new FastJsonComponent().javaBeanToJson(item));
+            sb.append(JsonUtil.javaBeanToJson(item, jsonType.getCode()));
             sb.append("\n");
         }
+        FileUtil.writeFile(sb.toString(),filePath,false);
 
-        BufferedWriter bw = null;
-        try {
-            file.createNewFile();
-
-            bw = new BufferedWriter(new FileWriter(file));
-            bw.write(sb.toString());
-            bw.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (null != bw) {
-                try {
-                    bw.close();
-                } catch (IOException e) {
-                }
-            }
-        }
     }
 
-    public static void buildJsonSamples(int sampleSize, String filePath) {
+
+
+    /**
+     * 生成样本对象，并保存到指定文件
+     *
+     * @param sampleSize 样本大小
+     * @param listSize   样本中List字段长度
+     * @param mapKeyNum  样本中Map对象Key数量
+     * @param filePath   样本输出的路径
+     */
+    public static List<SampleEntity> buildObjectSamples(int sampleSize, int listSize, int mapKeyNum, String filePath) {
+        List<SampleEntity> list = buildSamples(sampleSize, listSize, mapKeyNum);
+
         File file = new File(filePath);
         File parent = file.getParentFile();
         if (!parent.exists()) {
@@ -169,33 +158,49 @@ public class SampleBuilder {
         if (file.exists()) {
             file.delete();
         }
+
+        ObjectOutputStream oos = null;
+        try {
+            file.createNewFile();
+
+            oos = new ObjectOutputStream(new FileOutputStream(file));
+            oos.writeObject(list);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (null != oos) {
+                try {
+                    oos.close();
+                } catch (IOException e) {
+                }
+            }
+            return list;
+        }
+    }
+
+
+
+
+    /**  =============  UNUSED =============== **/
+
+
+
+    public static void buildJsonSamples(int sampleSize, String filePath, JsonTypeEnum jsonType) throws Exception {
 
         List<SampleEntity> list = buildSamples(sampleSize);
 
         StringBuilder sb = new StringBuilder();
         for (SampleEntity item : list) {
-            sb.append(new FastJsonComponent().javaBeanToJson(item));
+            sb.append(JsonUtil.javaBeanToJson(item, jsonType.getCode()));
             sb.append("\n");
         }
 
-        BufferedWriter bw = null;
-        try {
-            file.createNewFile();
+        FileUtil.writeFile(sb.toString(),filePath,false);
 
-            bw = new BufferedWriter(new FileWriter(file));
-            bw.write(sb.toString());
-            bw.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (null != bw) {
-                try {
-                    bw.close();
-                } catch (IOException e) {
-                }
-            }
-        }
     }
+
+
 
     public static void buildObjectSamples(int sampleSize, String filePath) {
         List<SampleEntity> list = buildSamples(sampleSize);
@@ -228,44 +233,27 @@ public class SampleBuilder {
             }
         }
     }
-
     /**
-     * 生成样本对象，并保存到指定文件
+     * 创建样本，并把样本JSON序列化，保存到文件中。
      *
-     * @param sampleSize 样本大小
-     * @param listSize   样本中List字段长度
-     * @param mapKeyNum  样本中Map对象Key数量
-     * @param filePath   样本输出的路径
+     * @param sampleSize 样本数量
+     * @param listSize   样本List长度
+     * @param mapKeyNum  样本Map中Key的数量
+     * @param filePath   样本输出的文件路径
      */
-    public static void buildObjectSamples(int sampleSize, int listSize, int mapKeyNum, String filePath) {
+    public static void buildJsonSamples(int sampleSize, int listSize,
+                                        int mapKeyNum, String filePath, JsonTypeEnum jsonType) throws Exception {
+
         List<SampleEntity> list = buildSamples(sampleSize, listSize, mapKeyNum);
 
-        File file = new File(filePath);
-        File parent = file.getParentFile();
-        if (!parent.exists()) {
-            parent.mkdirs();
+        StringBuilder sb = new StringBuilder();
+        for (SampleEntity item : list) {
+            sb.append(JsonUtil.javaBeanToJson(item, jsonType.getCode()));
+            sb.append("\n");
         }
 
-        if (file.exists()) {
-            file.delete();
-        }
+        FileUtil.writeFile(sb.toString(),filePath,false);
 
-        ObjectOutputStream oos = null;
-        try {
-            file.createNewFile();
 
-            oos = new ObjectOutputStream(new FileOutputStream(file));
-            oos.writeObject(list);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (null != oos) {
-                try {
-                    oos.close();
-                } catch (IOException e) {
-                }
-            }
-        }
     }
 }
