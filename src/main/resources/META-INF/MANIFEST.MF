@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Class-Path: ezmorph-1.0.6.jar asm-5.0.4.jar commons-logging-1.1.1.jar 
+ commons-collections-3.2.1.jar lombok-1.16.18.jar commons-pool2-2.4.2.
+ jar fastjson-1.2.47.jar jackson-core-2.9.5.jar json-smart-2.3.jar jac
+ kson-databind-2.9.5.jar accessors-smart-1.2.jar jedis-2.9.0.jar jacks
+ on-annotations-2.9.0.jar json-20160810.jar commons-lang-2.5.jar commo
+ ns-beanutils-1.8.0.jar gson-2.8.5.jar
+Main-Class: indi.sword.performance.test.TestDeserializableDifferentSam
+ ple
+
