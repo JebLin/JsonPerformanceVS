@@ -2,13 +2,27 @@
 
 ## 前言
 
-测试目的：测试当前主流Json引擎的序列化与反序列化性能。
+#### 测试目的： Purpose
+> 测试当前主流Json引擎的序列化与反序列化性能。
 ```
 JSON序列化(Object => JSON) 
 JSON反序列化(JSON => Object)
 ```
 
-一、硬件介绍
+
+#### 预告结论：Conclusion：
+- 1、 当数据小于 100K 的时候，建议使用 GSON。
+- 2、 当数据100K 与 1M 的之间时候，建议使用各个JSON引擎性能差不多
+- 3、 当数据大与 1M 的时候，建议使用 JACKSON 与 FASTJSON。
+
+1. when the data size is less than 100k, i recommand you to use GSON.
+1. when the data size is between 100k and 1M, choose what you like ,because their performance is similar.
+1. when the data size is greater than 1M,i recommand you to use JACKSON or FASTJSON because of their high-efficiency and stability. 
+
+---
+
+一、硬件介绍 Hardware
+
 ```$xslt
 MacBook Pro (13-inch, 2017, Four Thunderbolt 3 Ports
 Processor：3.1 GHz Intel Core i5
@@ -18,12 +32,13 @@ disk : 256G
 
 ```
 
-二、JVM配置
+二、JVM配置 The Configuration of JVM
 ```bash
+jdk 1.8.0_161
  -Xmx6g -Xms4g -XX:+UseG1GC 
 ```
 
-三、参与测试的JSON引擎介绍
+三、参与测试的JSON引擎介绍 The type of Json engine
 ```
 // 选用目前最主流的JSON引擎：
 public enum JsonTypeEnum {
@@ -35,6 +50,7 @@ public enum JsonTypeEnum {
 
 
 --- 使用版本介绍，都是较新的并且使用人数最多的：
+--- The most used and latest version
 <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind (Mar 26, 2018) -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -119,10 +135,6 @@ GSON(1)	    | - | 11.74	| 14.55	| 43.95	| 95.11 | 411.44 | 2129.12
 JACKSON(2)	| - | 67.54	| 69.67	| 85.31	| 109.95 | 256.29 | 934.18
 JSONSMART(3)| - | 38.36	| 40.37	| 63.87	| 92.54 | 350.25 | 2005.55
 
-
-
-
-
 > 反序列化： anaysisOneSample(averageCost(ms))
 
  engine | sampleNum | 1 | 10 | 100 | 1000 | 10000 | 100000 
@@ -142,6 +154,15 @@ GSON(1)		| - | 12.01	| 14.44	| 40.15	| 109.25 | 372.09 | 1789.78
 JACKSON(2)	| - | 68.66	| 70.61	| 90.96	| 128.83 | 194.67 | 909.17
 JSONSMART(3)| - | 36.27	| 37.87	| 55.48	| 109.62 | 281.41 | 1772.59
 
+> 反序列化： anaysisDifferentSample(averageCost(ms))
+
+ engine | sampleNum | 1 | 10 | 100 | 1000 | 10000 | 100000 
+ -- | -- | -- | -- | -- | -- | -- | -- 
+FASTJSON(0)	| - | 89.86	| 85.65	| 102.22 |138.07 |303.29 |1068.82
+GSON(1)		| - | 11.74	| 14.55	| 43.95	| 95.11	| 411.44 | 2129.63
+JACKSON(2)	| - | 67.54	| 69.65	| 85.31	| 109.95 | 256.29 | 934.39
+JSONSMART(3)| - | 38.36	| 40.37	| 63.87	| 92.54	| 350.24 | 2005.36
+
 
 性能总结： 
 ```
@@ -155,9 +176,6 @@ JACKSON > FASTJSON > JSONSMART > GSON
 
 处理1000个样本：
 测试结果同上。
-
-
-
 
 2、反序列化
 
@@ -173,11 +191,22 @@ d. 在样本量 100000 ，也就是对象大小为 100M 的时候,JACKSON 反超
 期待后期样本量 * 10情况下 JACKSON 与 FASTJSON 的PK
 
 处理1000个样本：
+a.在样本量为1 10 100的时候，也就是对象大小为1k 10k 100k 的时候，GSON的性能一直领先.
+在这三个量级的情况下， GSON > JSONSMART > JACKSON >  FASTJSON 
+b.在样本量 1000 ，也就是对象大小为 1M 的时候，SMARTJSON 反超 GSON
+在这个量级下， SMARTJSON > GSON >  FASTJSON > JACKSON
+c.在样本量 10000 100000，也就是对象大小为 10M 100M的时候，JSON 变慢的最明显,JACKSON 与 FASTJSON 性能最优最稳定
+在这个量级下， JACKSON > FASTJSON > SMARTJSON >  GSON 。
 
+
+总结：
+当数据小于 100K 的时候，建议使用 GSON。
+当数据100K 与 1M 的之间时候，建议使用各个JSON引擎性能差不多
+当数据大与 1M 的时候，建议使用 JACKSON 与 FASTJSON。
 ```
 
 
-- 对象大小(FileStorage(kb))：
+- 对象大小(FileSize(kb))：
 
  engine | sampleNum | 1 | 10 | 100 | 1000 | 10000 | 100000 
  -- | -- | -- | -- | -- | -- | -- | -- 
@@ -187,7 +216,7 @@ GSON(1)		    | - | 10801	| 10801	| 105892 | 1068117 | 10682736 | 106719677
 JACKSON(2)		| - | 1068	| 10541	| 102395 | 1033459 | 10336676 | 103254176
 JSONSMART(3)	| - | 1085	| 10881	| 106968 | 1078781 | 10789216 | 107785985
 
-- 对象大小(FileStorage(human))：
+- 对象大小(FileSize(human))：
 
  engine | sampleNum | 1 | 10 | 100 | 1000 | 10000 | 100000 
  -- | -- | -- | -- | -- | -- | -- | -- 
