@@ -3,7 +3,8 @@
 ## 前言
 
 #### 测试目的： Purpose
-> 测试当前主流Json引擎的序列化与反序列化性能。
+> 测试当前主流Json引擎的序列化与反序列化性能，包括JSON,FASTJSON,JACKSON and SMARTJSON。
+> Test the performance of the current mainstream engine，including JSON,FASTJSON,JACKSON and SMARTJSON
 ```
 JSON序列化(Object => JSON) 
 JSON反序列化(JSON => Object)
