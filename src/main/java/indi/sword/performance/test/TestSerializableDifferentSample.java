@@ -56,7 +56,7 @@ public class TestSerializableDifferentSample {
 
     private static void multiThread() throws Exception {
 
-        // 会越来越快，懂得告诉我为什么会这样？
+        // 会越来越快，被编译成本地代码
         ExecutorService pool = Executors.newFixedThreadPool(4);
         int threadNum = 4;
         for (int i = 0; i < 3; i++) {

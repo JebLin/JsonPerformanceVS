@@ -39,7 +39,12 @@ disk : 256G
 
 二、JVM配置 The Configuration of JVM
 ```bash
-jdk 1.8.0_161
+java version "1.8.0_161"
+Java(TM) SE Runtime Environment (build 1.8.0_161-b12)
+Java HotSpot(TM) 64-Bit Server VM (build 25.161-b12, mixed mode)
+
+---
+
  -Xmx6g -Xms4g -XX:+UseG1GC 
 ```
 - [JsonPerformanceVS,git代码地址](https://github.com/JebLin/JsonPerformanceVS)
@@ -270,8 +275,14 @@ echo 'OK'
 1、为什么不写一个for循环1000次，而要重新启动JVM
 答：一方面不想因为内存问题(GC)影响到测试结果，另一方面，你自己试试，基本循环到第5次之后，后面的速度都是10毫秒内的，不具备统计意义。无论事序列化还是反序列化，都会出现这种情况。
 
-1、为什么要把对象序列化后的信息写到redis
+2、为什么写个 for 循环 1000遍会越来越快。
+答：根据《深入了解Java虚拟机》第11章表述，被多次调用的方法与被多次执行的循环体，会触发JIT编译器进行程序的优化，最终将字节码转换为本地代码，大幅度提高执行效率。
+
+
+3、为什么要把对象序列化后的信息写到redis
 答：可以写到文件，但是每一次调用测试序列化的时候，读redis比读文件更省时间。
+
+
 
 ````
 
