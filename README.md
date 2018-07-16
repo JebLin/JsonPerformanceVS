@@ -1,4 +1,5 @@
 # JsonPerformanceVS
+- 主流JSON引擎性能比较（GSON，FASTJSON，JACKSON，JSONSMART）
 
 ## 前言
 
@@ -21,6 +22,8 @@ JSON反序列化(JSON => Object)
 1. when the data size is between 100k and 1M, choose what you like ,because their performance is similar.
 1. when the data size is greater than 1M,i recommand you to use JACKSON or FASTJSON because of their high efficiency and stability. 
 
+#### 任何错误与不如请不吝赐教，留言指出。谢谢。
+
 ---
 
 一、硬件介绍 Hardware
@@ -39,6 +42,7 @@ disk : 256G
 jdk 1.8.0_161
  -Xmx6g -Xms4g -XX:+UseG1GC 
 ```
+- [JsonPerformanceVS,git代码地址](https://github.com/JebLin/JsonPerformanceVS)
 
 三、参与测试的JSON引擎介绍 The type of Json engine
 ```
@@ -126,7 +130,7 @@ public enum JsonTypeEnum {
 ```
 
 
-- 一个样本：
+- 同一样本：
 
 > 序列化 ： anaysisOneSample(averageCost(ms))：
 
