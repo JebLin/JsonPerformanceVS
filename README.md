@@ -19,7 +19,7 @@ JSON反序列化(JSON => Object)
 
 1. when the data size is less than 100k, i recommand you to use GSON.
 1. when the data size is between 100k and 1M, choose what you like ,because their performance is similar.
-1. when the data size is greater than 1M,i recommand you to use JACKSON or FASTJSON because of their high-efficiency and stability. 
+1. when the data size is greater than 1M,i recommand you to use JACKSON or FASTJSON because of their high efficiency and stability. 
 
 ---
 
