@@ -4,6 +4,7 @@
 
 #### 测试目的： Purpose
 > 测试当前主流Json引擎的序列化与反序列化性能，包括JSON,FASTJSON,JACKSON and SMARTJSON。
+
 > Test the performance of the current mainstream engine，including JSON,FASTJSON,JACKSON and SMARTJSON
 ```
 JSON序列化(Object => JSON) 
@@ -11,7 +12,7 @@ JSON反序列化(JSON => Object)
 ```
 
 
-#### 预告结论：Conclusion：
+#### 预告结论：Conclusion pre：
 - 1、 当数据小于 100K 的时候，建议使用 GSON。
 - 2、 当数据100K 与 1M 的之间时候，建议使用各个JSON引擎性能差不多
 - 3、 当数据大与 1M 的时候，建议使用 JACKSON 与 FASTJSON。
