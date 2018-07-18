@@ -38,7 +38,8 @@ disk : 256G
 ```
 
 二、JVM配置 The Configuration of JVM
-```bash
+```
+
 java version "1.8.0_161"
 Java(TM) SE Runtime Environment (build 1.8.0_161-b12)
 Java HotSpot(TM) 64-Bit Server VM (build 25.161-b12, mixed mode)
@@ -281,8 +282,6 @@ echo 'OK'
 
 3、为什么要把对象序列化后的信息写到redis
 答：可以写到文件，但是每一次调用测试序列化的时候，读redis比读文件更省时间。
-
-
 
 ````
 
